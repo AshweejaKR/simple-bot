@@ -5,17 +5,40 @@ Created on Sat May 11 19:40:05 2024
 @author: ashwe
 """
 
-from src import tradingtot
+import time
+
+from src import Tradingtot
+from utils.utils import is_market_open
+
 
 def main():
+    # Example tasks/functions
+    def task1():
+        print("Task 1 is running")
+
+    def task2():
+        print("Task 2 is running")
+
     # Create an instance of TradingBot
-    bot = tradingtot()
+    bot = Tradingtot()
 
     # config the TradingBot
     bot.config()
 
+    bot.add_task("Task 1", 2, task1)
+    bot.add_task("Task 2", 3, task2)
+
     # running the TradingBot
     bot.run()
-    
+
+    print("is_market_open: ", is_market_open())
+    try:
+        while bot.is_running:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("bot stop request by user")
+        bot.stop()
+
+
 if __name__ == "__main__":
     main()

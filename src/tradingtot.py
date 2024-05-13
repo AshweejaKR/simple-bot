@@ -5,19 +5,76 @@ Created on Sat May 11 19:40:05 2024
 @author: ashwe
 """
 
-class tradingtot:
-    pass
+import threading
+import time
 
-    def config(self):
-        pass
+from utils import SmartAPI
 
-    def run(self):
-        while True:
-            print("running ...")
-            break
 
 class Task:
-    pass
+    def __init__(self, name, interval, function):
+        self.name = name
+        self.interval = interval
+        self.function = function
+        self.stop_event = threading.Event()
+
+    def execute(self):
+        while not self.stop_event.is_set():
+            self.function()
+            time.sleep(self.interval)
+
+    def stop(self):
+        self.stop_event.set()
+
+
+def running_disp():
+    print("Scheduler running ...")
+
 
 class Scheduler:
-    pass
+    # class attribute
+    is_running = False
+
+    def __init__(self):
+        self.tasks = []
+        self.add_task("self", 1, running_disp)
+
+    def add_task(self, name, interval, function):
+        task = Task(name, interval, function)
+        self.tasks.append(task)
+
+    def run(self):
+        if not self.__class__.is_running:
+            for task in self.tasks:
+                thread = threading.Thread(target=task.execute)
+                thread.start()
+            self.__class__.is_running = True
+        else:
+            print("bot already running ...")
+
+    def stop(self):
+        for task in self.tasks:
+            task.stop()
+
+
+class Tradingtot(Scheduler):
+    def __init__(self):
+        self.obj = None
+
+        # invoking the __init__ of the parent class
+        Scheduler.__init__(self)
+
+    def config(self):
+        # just for testing
+        key_secret = open("D:\\GitHub\\simple-bot\\utils\\key.txt", "r").read().split()
+        api_key = key_secret[0]
+        api_secret = key_secret[1]
+        client_id = key_secret[2]
+        passwd = key_secret[3]
+        totp_str = key_secret[4]
+
+        self.obj = SmartAPI(api_key, api_secret, client_id, passwd, totp_str)
+        self.obj.login()
+
+    def exit(self):
+        self.obj.logout()

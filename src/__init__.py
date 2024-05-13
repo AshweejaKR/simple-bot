@@ -6,4 +6,4 @@ Created on Sat May 11 19:40:05 2024
 """
 
 # Import modules from the src package
-from .tradingtot import tradingtot, Task, Scheduler
+from .tradingtot import Tradingtot, Task, Scheduler
