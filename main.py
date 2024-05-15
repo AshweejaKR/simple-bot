@@ -35,9 +35,14 @@ def main():
     try:
         while bot.is_running:
             time.sleep(1)
+
+            if not is_market_open():
+                bot.stop("Market Closed")
     except KeyboardInterrupt:
-        print("bot stop request by user")
-        bot.stop()
+        bot.stop("bot stop request by user")
+
+    bot.exit()
+    print("Trading bot done ...")
 
 
 if __name__ == "__main__":

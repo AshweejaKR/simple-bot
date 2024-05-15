@@ -17,10 +17,36 @@ class Task:
         self.interval = interval
         self.function = function
         self.stop_event = threading.Event()
+        self.trade = "NA"
+        self.isOpen = False
+        self.no_of_exec = 0
 
     def execute(self):
         while not self.stop_event.is_set():
-            self.function()
+            r = self.function()
+
+            if r == "BUY" and self.trade != 'BUY':
+                if self.isOpen:
+                    self.trade = 'NA'
+                    self.isOpen = False
+                    print("exiting short Trade ...")
+                    self.no_of_exec = self.no_of_exec + 1
+                else:
+                    self.trade = "BUY"
+                    self.isOpen = True
+                    print("entering Long Trade ...")
+
+            elif r == "SELL" and self.trade != 'SELL':
+                if self.isOpen:
+                    self.trade = 'NA'
+                    self.isOpen = False
+                    print("exiting Long Trade ...")
+                    self.no_of_exec = self.no_of_exec + 1
+                else:
+                    self.trade = "SELL"
+                    self.isOpen = True
+                    print("entering short Trade ...")
+
             time.sleep(self.interval)
 
     def stop(self):
@@ -28,7 +54,7 @@ class Task:
 
 
 def running_disp():
-    print("Scheduler running ...")
+    print("Bot Scheduler running ...")
 
 
 class Scheduler:
@@ -37,7 +63,7 @@ class Scheduler:
 
     def __init__(self):
         self.tasks = []
-        self.add_task("self", 1, running_disp)
+        self.add_task("self", 5, running_disp)
 
     def add_task(self, name, interval, function):
         task = Task(name, interval, function)
@@ -52,7 +78,9 @@ class Scheduler:
         else:
             print("bot already running ...")
 
-    def stop(self):
+    def stop(self, msg=None):
+        print("stopping trading bot, msg: {} ".format(msg))
+        self.__class__.is_running = False
         for task in self.tasks:
             task.stop()
 
