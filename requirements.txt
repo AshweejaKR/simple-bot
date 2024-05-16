@@ -12,6 +12,8 @@ idna==3.4
 incremental==22.10.0
 isodate==0.6.1
 logzero==1.7.0
+numpy==1.26.4
+pandas==2.2.2
 pycparser==2.21
 pycryptodome==3.20.0
 pyotp==2.8.0
@@ -28,6 +30,7 @@ Twisted==22.10.0
 twisted-iocpsupport==1.0.4
 txaio==23.1.1
 typing_extensions==4.6.3
+tzdata==2024.1
 urllib3==2.0.3
 websocket-client==1.6.0
 zope.interface==6.0

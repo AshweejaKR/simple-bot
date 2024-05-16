@@ -7,6 +7,9 @@ Created on Sat May 11 19:40:05 2024
 
 from SmartApi import SmartConnect 
 from pyotp import TOTP
+import urllib
+import json
+
 
 class SmartAPI:
     def __init__(self, api_key, api_secret, client_id, passwd, totp_str):
@@ -19,6 +22,10 @@ class SmartAPI:
 
         # Initialize SmartAPI connection
         self.obj = SmartConnect(api_key = self.api_key)
+
+        instrument_url = "https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json"
+        response = urllib.request.urlopen(instrument_url)
+        instrument_list = json.loads(response.read())
 
     def get_smartapi_obj(self):
         return self.obj
