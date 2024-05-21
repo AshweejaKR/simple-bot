@@ -15,14 +15,12 @@ from data import global_data
 class market_data:
     def __init__(self):
         self.obj = global_data.smartapi_obj
-        print("market data:18 obj : ", self.obj)
 
     def get_live_data(self, ticker, exchange='NSE'):
         data = self.obj.ltpData(exchange=exchange, tradingsymbol=ticker, symboltoken=utils.utils.token_lookup(ticker))
         print(data)
 
     def get_hist_data(self, ticker, duration, interval, exchange="NSE"):
-        # print("global_data.instrument_list : ", global_data.instrument_list)
         params = {
             "exchange" : exchange,
             "symboltoken" : utils.utils.token_lookup(ticker),
@@ -31,10 +29,7 @@ class market_data:
             "todate" : dt.date.today().strftime('%Y-%m-%d %H:%M')
         }
 
-        print("params: ", params)
-        print("market data:34 obj : ", self.obj)
         hist_data = self.obj.getCandleData(params)
-        print("hist_data: ", hist_data)
         df_data = pd.DataFrame(hist_data["data"],
                                columns=["date", "open", "high", "low", "close", "volume"])
         df_data.set_index("date", inplace=True)

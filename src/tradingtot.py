@@ -9,6 +9,7 @@ import threading
 import time
 
 from utils import SmartAPI
+from utils.utils import is_market_open, wait_till_market_open
 from data import global_data
 
 
@@ -25,6 +26,7 @@ class Task:
     def execute(self):
         while not self.stop_event.is_set():
             r = self.function()
+            print("RETURN : ", r)
 
             if r == "BUY" and self.trade != 'BUY':
                 if self.isOpen:
@@ -71,6 +73,7 @@ class Scheduler:
         self.tasks.append(task)
 
     def run(self):
+        print("is_market_open: ", is_market_open())
         if not self.__class__.is_running:
             for task in self.tasks:
                 thread = threading.Thread(target=task.execute)
@@ -78,6 +81,21 @@ class Scheduler:
             self.__class__.is_running = True
         else:
             print("bot already running ...")
+
+        c = 0
+        try:
+            while self.is_running:
+                print("bot running ...")
+                time.sleep(1)
+                c = c + 1
+
+                if not is_market_open():
+                    self.stop("Market Closed")
+
+                elif c > 20:
+                    self.stop("Max run hit")
+        except KeyboardInterrupt:
+            self.stop("bot stop request by user")
 
     def stop(self, msg=None):
         print("stopping trading bot, msg: {} ".format(msg))
@@ -93,6 +111,13 @@ class Tradingtot(Scheduler):
         # invoking the __init__ of the parent class
         Scheduler.__init__(self)
 
+        # config the TradingBot
+        self.config()
+
+    def __del__(self):
+        self.exit()
+        print("Trading bot done ...")
+
     def config(self):
         # just for testing
         key_secret = open("D:\\GitHub\\simple-bot\\utils\\key.txt", "r").read().split()
@@ -104,7 +129,6 @@ class Tradingtot(Scheduler):
 
         self.obj = SmartAPI(api_key, api_secret, client_id, passwd, totp_str)
         self.obj.login()
-        print("trading bot:107 obj : ", global_data.smartapi_obj)
         return self.obj.get_smartapi_obj()
 
     def exit(self):

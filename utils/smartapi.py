@@ -25,14 +25,12 @@ class SmartAPI:
         # Initialize SmartAPI connection
         self.obj = SmartConnect(api_key = self.api_key)
         global_data.smartapi_obj = self.obj
-        print("smart api:28 obj : ", self.obj)
 
         instrument_url = "https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json"
         response = urllib.request.urlopen(instrument_url)
         global_data.instrument_list = json.loads(response.read())
 
     def get_smartapi_obj(self):
-        print("smart api:34 obj : ", self.obj)
         return self.obj
 
     def login(self):
