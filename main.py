@@ -20,10 +20,11 @@ def main():
         lg.info("trading_strategy1 is running")
         # running for test ##
         ticker = "INFY"
-        data = market_data()
-        data.get_live_data(ticker)
-        
-        infy_data = data.get_hist_data("INFY", 5, "ONE_DAY")
+        obj = market_data()
+        data = obj.get_current_price(ticker)
+        print(data)
+
+        infy_data = obj.get_hist_data("INFY", 5, "ONE_DAY")
         lg.info(infy_data)
         # end test ###
 

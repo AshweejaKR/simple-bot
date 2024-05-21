@@ -19,7 +19,18 @@ class market_data:
 
     def get_live_data(self, ticker, exchange='NSE'):
         data = self.obj.ltpData(exchange=exchange, tradingsymbol=ticker, symboltoken=utils.utils.token_lookup(ticker))
-        lg.info(data)
+        return data
+
+    def get_current_price(self, ticker, exchange='NSE'):
+        data = self.get_live_data(ticker, exchange)
+        if data['status'] and (data['message'] == 'SUCCESS'):
+            ltp = float(data['data']['ltp'])
+            return ltp
+
+        else:
+            template = "An ERROR occurred. error message : {0!r}"
+            message = template.format(data['message'])
+            lg.error(message)
 
     def get_hist_data(self, ticker, duration, interval, exchange="NSE"):
         params = {
