@@ -18,8 +18,11 @@ def main():
     # Example tasks/functions
     def task1():
         print("Task 1 is running")
+        ticker = "INFY"
         data = market_data()
-        infy_data = data.get_hist_data("INFY", 1, "ONE_MINUTE")
+        data.get_live_data(ticker)
+        
+        infy_data = data.get_hist_data("INFY", 10, "ONE_MINUTE")
 
         for i in range(1,len(infy_data[1:])):
             print(infy_data.iloc[i]["close"])

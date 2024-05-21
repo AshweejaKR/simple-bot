@@ -17,11 +17,12 @@ class market_data:
         self.obj = global_data.smartapi_obj
         print("market data:18 obj : ", self.obj)
 
-    def get_live_data(self):
-        pass
+    def get_live_data(self, ticker, exchange='NSE'):
+        data = self.obj.ltpData(exchange=exchange, tradingsymbol=ticker, symboltoken=utils.utils.token_lookup(ticker))
+        print(data)
 
     def get_hist_data(self, ticker, duration, interval, exchange="NSE"):
-        print("global_data.instrument_list : ", global_data.instrument_list)
+        # print("global_data.instrument_list : ", global_data.instrument_list)
         params = {
             "exchange" : exchange,
             "symboltoken" : utils.utils.token_lookup(ticker),
