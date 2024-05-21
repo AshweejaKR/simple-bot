@@ -10,20 +10,25 @@ import sys
 from src import Tradingtot
 from data import market_data
 
+from utils.logger import *
+
 bot_mode = "LIVE"
 
 def main():
     # Example tasks/functions
     def trading_strategy1():
-        print("trading_strategy1 is running")
+        lg.info("trading_strategy1 is running")
         # running for test ##
         ticker = "INFY"
         data = market_data()
         data.get_live_data(ticker)
         
         infy_data = data.get_hist_data("INFY", 5, "ONE_DAY")
-        print(infy_data)
+        lg.info(infy_data)
         # end test ###
+
+    # initialize the logger (imported from logger)
+    initialize_logger()
 
     # Create an instance of TradingBot
     bot = Tradingtot()

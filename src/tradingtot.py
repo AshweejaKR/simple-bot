@@ -10,7 +10,8 @@ import time
 
 from utils import SmartAPI
 from utils.utils import is_market_open, wait_till_market_open
-from data import global_data
+
+from utils.logger import *
 
 
 class Task:
@@ -32,23 +33,23 @@ class Task:
                 if self.isOpen:
                     self.trade = 'NA'
                     self.isOpen = False
-                    print("exiting short Trade ...")
+                    lg.info("exiting short Trade ...")
                     self.no_of_exec = self.no_of_exec + 1
                 else:
                     self.trade = "BUY"
                     self.isOpen = True
-                    print("entering Long Trade ...")
+                    lg.info("entering Long Trade ...")
 
             elif r == "SELL" and self.trade != 'SELL':
                 if self.isOpen:
                     self.trade = 'NA'
                     self.isOpen = False
-                    print("exiting Long Trade ...")
+                    lg.info("exiting Long Trade ...")
                     self.no_of_exec = self.no_of_exec + 1
                 else:
                     self.trade = "SELL"
                     self.isOpen = True
-                    print("entering short Trade ...")
+                    lg.info("entering short Trade ...")
 
             time.sleep(self.interval)
 
@@ -57,7 +58,7 @@ class Task:
 
 
 def running_disp():
-    print("Bot Scheduler running ...")
+    lg.info("Bot Scheduler running ...")
 
 
 class Scheduler:
@@ -73,19 +74,18 @@ class Scheduler:
         self.tasks.append(task)
 
     def run(self):
-        print("is_market_open: ", is_market_open())
         if not self.__class__.is_running:
             for task in self.tasks:
                 thread = threading.Thread(target=task.execute)
                 thread.start()
             self.__class__.is_running = True
         else:
-            print("bot already running ...")
+            lg.info("bot already running ...")
 
         c = 0
         try:
             while self.is_running:
-                print("bot running ...")
+                lg.info("bot running ...")
                 time.sleep(1)
                 c = c + 1
 
@@ -98,7 +98,7 @@ class Scheduler:
             self.stop("bot stop request by user")
 
     def stop(self, msg=None):
-        print("stopping trading bot, msg: {} ".format(msg))
+        lg.info("stopping trading bot, msg: {} ".format(msg))
         self.__class__.is_running = False
         for task in self.tasks:
             task.stop()
@@ -113,10 +113,11 @@ class Tradingtot(Scheduler):
 
         # config the TradingBot
         self.config()
+        wait_till_market_open()
 
     def __del__(self):
         self.exit()
-        print("Trading bot done ...")
+        lg.info("Trading bot done ...")
 
     def config(self):
         # just for testing

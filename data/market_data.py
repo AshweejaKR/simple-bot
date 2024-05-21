@@ -10,6 +10,7 @@ import datetime as dt
 
 import utils.utils
 from data import global_data
+from utils.logger import *
 
 
 class market_data:
@@ -18,7 +19,7 @@ class market_data:
 
     def get_live_data(self, ticker, exchange='NSE'):
         data = self.obj.ltpData(exchange=exchange, tradingsymbol=ticker, symboltoken=utils.utils.token_lookup(ticker))
-        print(data)
+        lg.info(data)
 
     def get_hist_data(self, ticker, duration, interval, exchange="NSE"):
         params = {

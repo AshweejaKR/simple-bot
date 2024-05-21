@@ -12,6 +12,7 @@ from SmartApi import SmartConnect
 from pyotp import TOTP
 
 from data import global_data
+from utils.logger import *
 
 class SmartAPI:
     def __init__(self, api_key, api_secret, client_id, passwd, totp_str):
@@ -38,27 +39,27 @@ class SmartAPI:
         try:
             data = self.obj.generateSession(self.client_id, self.passwd, TOTP(self.totp_str).now())
             if(data['status'] and data['message'] == 'SUCCESS'):
-                print('Login success ... !')
+                lg.info('Login success ... !')
             else:
-                print('Login failed ... !')
+                lg.error('Login failed ... !')
         except Exception as err:
             template = "An exception of type {0} occurred. error message:{1!r}"
             message = template.format(type(err).__name__, err.args)
-            print("ERROR: {}".format(message))
+            lg.error("ERROR: {}".format(message))
 
     def logout(self):
         # Logout from the SmartAPI
         try:
             data = self.obj.terminateSession(self.client_id)
             if(data['status'] and data['message'] == 'SUCCESS'):
-                print('Logout success ... !')
+                lg.info('Logout success ... !')
             else:
-                print('Logout failed ... !')
+                lg.error('Logout failed ... !')
         except Exception as err:
             template = "An exception of type {0} occurred. error message:{1!r}"
             message = template.format(type(err).__name__, err.args)
-            print("ERROR: {}".format(message))
-            print('Logout failed ... !')
+            lg.error("ERROR: {}".format(message))
+            lg.error('Logout failed ... !')
 
     def place_order(self, symbol, price, quantity, order_type):
         # Place order using SmartAPI
