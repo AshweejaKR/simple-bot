@@ -9,6 +9,7 @@ import threading
 import time
 
 from utils import SmartAPI
+from data import global_data
 
 
 class Task:
@@ -103,6 +104,8 @@ class Tradingtot(Scheduler):
 
         self.obj = SmartAPI(api_key, api_secret, client_id, passwd, totp_str)
         self.obj.login()
+        print("trading bot:107 obj : ", global_data.smartapi_obj)
+        return self.obj.get_smartapi_obj()
 
     def exit(self):
         self.obj.logout()

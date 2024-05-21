@@ -5,16 +5,24 @@ Created on Sat May 11 19:40:05 2024
 @author: ashwe
 """
 
-import time
+import time, sys
 
 from src import Tradingtot
-from utils.utils import is_market_open
+from utils.utils import is_market_open, wait_till_market_open
+from data import market_data
+from data import global_data
 
+bot_mode = "LIVE"
 
 def main():
     # Example tasks/functions
     def task1():
         print("Task 1 is running")
+        data = market_data()
+        infy_data = data.get_hist_data("INFY", 1, "ONE_MINUTE")
+
+        for i in range(1,len(infy_data[1:])):
+            print(infy_data.iloc[i]["close"])
 
     def task2():
         print("Task 2 is running")
@@ -23,21 +31,29 @@ def main():
     bot = Tradingtot()
 
     # config the TradingBot
-    bot.config()
+    obj = bot.config()
+    print("main:35 obj : ", obj)
 
     bot.add_task("Task 1", 2, task1)
-    bot.add_task("Task 2", 3, task2)
+    # bot.add_task("Task 2", 3, task2)
+
+    wait_till_market_open()
 
     # running the TradingBot
     bot.run()
 
     print("is_market_open: ", is_market_open())
+    c = 0
     try:
         while bot.is_running:
             time.sleep(1)
+            c = c + 1
 
             if not is_market_open():
                 bot.stop("Market Closed")
+
+            elif c > 10:
+                bot.stop("Max run hit")
     except KeyboardInterrupt:
         bot.stop("bot stop request by user")
 
